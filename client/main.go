@@ -52,13 +52,13 @@ func StartCollect(path *string, duration time.Duration, URL url.URL, someInfo mo
 
 func TradeInfo(path string, duration time.Duration) {
 	PATH := "ws/btcusdt@trade"
-	tmp := models.TradeInfo{}
+	tmp := &models.TradeInfo{}
 	StartCollect(&path, duration, GetUrl(SERVER, PATH), tmp)
 }
 
 func OrderBookInfo(path string, duration time.Duration) {
 	PATH := "ws/btcusdt@depth@100ms"
-	tmp := models.OrderBookInfo{}
+	tmp := &models.OrderBookInfo{}
 	StartCollect(&path, duration, GetUrl(SERVER, PATH), tmp)
 }
 

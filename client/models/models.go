@@ -25,7 +25,7 @@ type TradeInfo struct {
 	BuyerMarketMaker bool   `json:"m"`
 }
 
-func (other TradeInfo) Convert() []string {
+func (other *TradeInfo) Convert() []string {
 	var record []string
 	record = append(
 		record, other.EventType, strconv.FormatInt(other.EventTime, 10), other.Symbol,
@@ -35,7 +35,7 @@ func (other TradeInfo) Convert() []string {
 	return record
 }
 
-func (other TradeInfo) ParseAndSave(message []byte, w *csv.Writer) {
+func (other *TradeInfo) ParseAndSave(message []byte, w *csv.Writer) {
 	json.Unmarshal(message, &other)
 	w.Write(other.Convert())
 }
@@ -80,7 +80,7 @@ type OrderBookInfo struct {
 	Asks        []PriceLevelAndQuantity `json:"a"`
 }
 
-func (other OrderBookInfo) Convert() []string {
+func (other *OrderBookInfo) Convert() []string {
 	var record []string
 	record = append(record, other.EventType, strconv.FormatInt(other.EventTime, 10),
 		other.Symbol, strconv.FormatInt(other.EventTime, 10),
@@ -89,7 +89,7 @@ func (other OrderBookInfo) Convert() []string {
 	return record
 }
 
-func (other OrderBookInfo) ParseAndSave(message []byte, w *csv.Writer) {
+func (other *OrderBookInfo) ParseAndSave(message []byte, w *csv.Writer) {
 	json.Unmarshal(message, &other)
 	w.Write(other.Convert())
 }
