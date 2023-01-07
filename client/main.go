@@ -3,7 +3,6 @@ package main
 import (
 	"client/models"
 	"encoding/csv"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/url"
@@ -13,43 +12,56 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func StartCollectTradeInfo(path string, duration time.Duration) {
-	SERVER := "stream.binance.com:9443"
-	PATH := "ws/btcusdt@trade"
-	log.Println("Connecting to:", SERVER, "at", PATH)
-	URL := url.URL{Scheme: "wss", Host: SERVER, Path: PATH}
+var SERVER string = "stream.binance.com:9443"
 
-	f, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY, 0666)
+func GetUrl(server string, path string) url.URL {
+	log.Println("Connecting to:", server, "at", path)
+	return url.URL{Scheme: "wss", Host: server, Path: path}
+}
+
+func Do(w *csv.Writer, duration time.Duration, URL url.URL, someInfo models.Binance) {
+	c, _, err := websocket.DefaultDialer.Dial(URL.String(), nil)
 	if err != nil {
-		fmt.Println(err)
+		log.Println("Error:", err)
+		return
 	}
-	defer f.Close()
-	w := csv.NewWriter(f)
+	defer c.Close()
 
 	start := time.Now()
-
 	for duration >= time.Since(start) {
-		c, _, err := websocket.DefaultDialer.Dial(URL.String(), nil)
-		if err != nil {
-			log.Println("Error:", err)
-			return
-		}
-		defer c.Close()
 		_, message, err := c.ReadMessage()
 
 		if err != nil {
 			log.Println("Write error:", err)
 			return
 		}
-
-		tradeInfo := models.TradeInfo{}
-		json.Unmarshal(message, &tradeInfo)
-
-		w.Write(tradeInfo.Convert())
+		someInfo.ParseAndSave(message, w)
 	}
+}
+
+func StartCollect(path *string, duration time.Duration, URL url.URL, someInfo models.Binance) {
+	f, err := os.OpenFile(*path, os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer f.Close()
+	w := csv.NewWriter(f)
+	Do(w, duration, URL, someInfo)
 	w.Flush()
 }
 
+func TradeInfo(path string, duration time.Duration) {
+	PATH := "ws/btcusdt@trade"
+	tmp := models.TradeInfo{}
+	StartCollect(&path, duration, GetUrl(SERVER, PATH), tmp)
+}
+
+func OrderBookInfo(path string, duration time.Duration) {
+	PATH := "ws/btcusdt@depth@100ms"
+	tmp := models.OrderBookInfo{}
+	StartCollect(&path, duration, GetUrl(SERVER, PATH), tmp)
+}
+
 func main() {
-	StartCollectTradeInfo("./kek.csv", time.Second*10)
+	OrderBookInfo("./kek.csv", time.Second*10)
 }
