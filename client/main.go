@@ -35,7 +35,8 @@ func Do(w *csv.Writer, duration time.Duration, URL url.URL, someInfo models.Bina
 			log.Println("Write error:", err)
 			return
 		}
-		someInfo.ParseAndSave(message, w)
+		someInfo.Parse(message, w)
+		w.Write(someInfo.Convert())
 	}
 }
 

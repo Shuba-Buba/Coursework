@@ -9,7 +9,7 @@ import (
 
 type Binance interface {
 	Convert() []string
-	ParseAndSave(message []byte, w *csv.Writer)
+	Parse(message []byte, w *csv.Writer)
 }
 
 type TradeInfo struct {
@@ -35,9 +35,8 @@ func (other *TradeInfo) Convert() []string {
 	return record
 }
 
-func (other *TradeInfo) ParseAndSave(message []byte, w *csv.Writer) {
+func (other *TradeInfo) Parse(message []byte, w *csv.Writer) {
 	json.Unmarshal(message, &other)
-	w.Write(other.Convert())
 }
 
 type PriceLevelAndQuantity struct {
@@ -89,7 +88,6 @@ func (other *OrderBookInfo) Convert() []string {
 	return record
 }
 
-func (other *OrderBookInfo) ParseAndSave(message []byte, w *csv.Writer) {
+func (other *OrderBookInfo) Parse(message []byte, w *csv.Writer) {
 	json.Unmarshal(message, &other)
-	w.Write(other.Convert())
 }
