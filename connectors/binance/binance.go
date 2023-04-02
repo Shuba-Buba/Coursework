@@ -1,18 +1,17 @@
-package models
+package binance
 
 import (
-	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"strconv"
 )
 
-type Binance interface {
+type BinanceParser interface {
 	Convert() []string
-	Parse(message []byte, w *csv.Writer)
+	Parse(message []byte)
 }
 
-type TradeInfo struct {
+type BinanceTrade struct {
 	EventType        string `json:"e"`
 	EventTime        int64  `json:"E"`
 	Symbol           string `json:"s"`
@@ -25,7 +24,7 @@ type TradeInfo struct {
 	BuyerMarketMaker bool   `json:"m"`
 }
 
-func (other *TradeInfo) Convert() []string {
+func (other *BinanceTrade) Convert() []string {
 	var record []string
 	record = append(
 		record, other.EventType, strconv.FormatInt(other.EventTime, 10), other.Symbol,
@@ -35,7 +34,7 @@ func (other *TradeInfo) Convert() []string {
 	return record
 }
 
-func (other *TradeInfo) Parse(message []byte, w *csv.Writer) {
+func (other *BinanceTrade) Parse(message []byte) {
 	json.Unmarshal(message, &other)
 }
 
@@ -69,7 +68,7 @@ func (n *PriceLevelAndQuantity) UnmarshalJSON(buf []byte) error {
 	return nil
 }
 
-type OrderBookInfo struct {
+type BinanceOrderBook struct {
 	EventType   string                  `json:"e"`
 	EventTime   int64                   `json:"E"`
 	Symbol      string                  `json:"s"`
@@ -79,7 +78,7 @@ type OrderBookInfo struct {
 	Asks        []PriceLevelAndQuantity `json:"a"`
 }
 
-func (other *OrderBookInfo) Convert() []string {
+func (other *BinanceOrderBook) Convert() []string {
 	var record []string
 	record = append(record, other.EventType, strconv.FormatInt(other.EventTime, 10),
 		other.Symbol, strconv.FormatInt(other.EventTime, 10),
@@ -88,6 +87,6 @@ func (other *OrderBookInfo) Convert() []string {
 	return record
 }
 
-func (other *OrderBookInfo) Parse(message []byte, w *csv.Writer) {
+func (other *BinanceOrderBook) Parse(message []byte) {
 	json.Unmarshal(message, &other)
 }
