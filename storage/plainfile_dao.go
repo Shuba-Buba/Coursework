@@ -51,6 +51,7 @@ func (t *PlainFileDao) GetRows(table string) chan string {
 		if err != nil {
 			log.Fatal(err)
 		}
+		defer f.Close()
 		scanner := bufio.NewScanner(f)
 		for scanner.Scan() {
 			ch <- scanner.Text()
