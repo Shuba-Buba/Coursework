@@ -12,16 +12,16 @@ type PlainFileDao struct {
 	dataDir string
 }
 
-func MakePlainFileDao(dataDir string) PlainFileDao {
-	return PlainFileDao{dataDir}
+func MakePlainFileDao(dataDir string) *PlainFileDao {
+	return &PlainFileDao{dataDir}
 }
 
-func (t PlainFileDao) GetFilePath(table string) string {
+func (t *PlainFileDao) GetFilePath(table string) string {
 	return path.Join(t.dataDir, table)
 }
 
 // table -- это путь к таблице относительно папки dataDir
-func (t PlainFileDao) Append(table string, data string) {
+func (t *PlainFileDao) Append(table string, data string) {
 	filePath := t.GetFilePath(table)
 
 	// Создаем родительскую папку, если она не существует
@@ -43,7 +43,7 @@ func (t PlainFileDao) Append(table string, data string) {
 	}
 }
 
-func (t PlainFileDao) GetRows(table string) chan string {
+func (t *PlainFileDao) GetRows(table string) chan string {
 	ch := make(chan string)
 	go func() {
 		defer close(ch)
@@ -60,7 +60,7 @@ func (t PlainFileDao) GetRows(table string) chan string {
 }
 
 // prefix в данном случае это путь к папке
-func (t PlainFileDao) GetAllTables() []string {
+func (t *PlainFileDao) GetAllTables() []string {
 	entries, err := os.ReadDir(t.dataDir)
 	if err != nil {
 		log.Fatal(err)

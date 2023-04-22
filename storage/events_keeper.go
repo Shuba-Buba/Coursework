@@ -16,12 +16,12 @@ func getTableName(t time.Time) string {
 	return t.Format("2006-01-02-15-04")
 }
 
-func MakeEventsKeeper(symbol string) EventsKeeper {
-	dao := PlainFileDao{path.Join("data", symbol)}
-	return EventsKeeper{dao}
+func MakeEventsKeeper(symbol string) *EventsKeeper {
+	dao := MakePlainFileDao(path.Join("data", symbol))
+	return &EventsKeeper{dao}
 }
 
-func (t EventsKeeper) Save(event models.Event) {
+func (t *EventsKeeper) Save(event models.Event) {
 	table := getTableName(event.Timestamp)
 	b, err := json.Marshal(event)
 	if err != nil {
@@ -31,7 +31,7 @@ func (t EventsKeeper) Save(event models.Event) {
 }
 
 // Возвращает события в указанном промежутке с точностью до минуты
-func (t EventsKeeper) GetEvents(from time.Time, to time.Time) chan models.Event {
+func (t *EventsKeeper) GetEvents(from time.Time, to time.Time) chan models.Event {
 	tables := t.dao.GetAllTables()
 	from_table := getTableName(from)
 	to_table := getTableName(to)
