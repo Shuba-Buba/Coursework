@@ -1,9 +1,9 @@
 package connectors
 
 import (
+	"fmt"
 	"log"
 	"net"
-	"strconv"
 
 	"github.com/gorilla/websocket"
 )
@@ -18,7 +18,7 @@ type Connector struct {
 
 func (c *Connector) Connect(symbols string) {
 
-	addr := "127.0.0.1:" + strconv.Itoa(c.Port)
+	addr := fmt.Sprintf("127.0.0.1:%d", c.Port)
 	socket, _, err := websocket.DefaultDialer.Dial(symbols, nil)
 	conn, err := net.Dial("udp", addr)
 	if err != nil {

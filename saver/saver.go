@@ -1,7 +1,6 @@
 package saver
 
 import (
-	"bufio"
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
@@ -10,6 +9,9 @@ import (
 	"os"
 	"sync"
 	"test/contracts"
+	"test/models"
+	"test/storage"
+	"time"
 )
 
 var my_port int = 1234
@@ -23,12 +25,8 @@ func MakeSaver(sender chan contracts.Contract) *Saver {
 	return &Saver{Port: my_port, ch: sender}
 }
 
-func Listen(file_name string, port int, ready chan<- struct{}) {
-	f, err := os.OpenFile(file_name, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
+func Listen(symbol string, port int, ready chan<- struct{}) {
+	events_keeper := storage.MakeEventsKeeper(symbol)
 
 	addr := net.UDPAddr{
 		Port: port,
@@ -41,15 +39,19 @@ func Listen(file_name string, port int, ready chan<- struct{}) {
 	for {
 		p := make([]byte, 2048)
 		_, _, err := ser.ReadFromUDP(p)
-		// fmt.Printf("Read a message %s \n", p)
+
 		if err != nil {
 			fmt.Printf("Some error  %v", err)
 			continue
 		}
 
-		if _, err = f.WriteString(string(p)); err != nil {
-			panic(err)
+		event := models.Event{
+			Timestamp: time.Now(),
+			EventType: models.OrderBookUpdate,
+			Data:      p,
 		}
+
+		events_keeper.Save(event)
 	}
 }
 
@@ -63,8 +65,7 @@ func (this *Saver) Run() {
 	}
 	defer f.Close()
 
-	r := bufio.NewReader(f)
-	dec := json.NewDecoder(r)
+	dec := json.NewDecoder(f)
 
 	addr := net.UDPAddr{
 		Port: my_port,
@@ -102,7 +103,7 @@ func (this *Saver) Run() {
 		}
 		go func() {
 			wg.Add(1)
-			Listen(contract.FileName, int(port), ready)
+			Listen(contract.Symbol, int(port), ready)
 			wg.Done()
 		}()
 		<-ready
