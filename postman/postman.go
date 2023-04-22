@@ -2,8 +2,8 @@ package postman
 
 import (
 	"encoding/binary"
+	"fmt"
 	"net"
-	"strconv"
 	"test/connectors"
 	"test/contracts"
 )
@@ -36,7 +36,7 @@ func (this *Postman) Run() {
 
 				<-this.connects[cur_free_port].Ready
 
-				addr := "127.0.0.1:" + strconv.Itoa(new_contract.Port)
+				addr := fmt.Sprintf("127.0.0.1:%d", new_contract.Port)
 				conn, _ := net.Dial("udp", addr)
 
 				bs := make([]byte, 4)

@@ -12,5 +12,5 @@ const (
 type Event struct {
 	Timestamp time.Time
 	EventType EventType
-	Data      interface{}
+	Data      string
 }

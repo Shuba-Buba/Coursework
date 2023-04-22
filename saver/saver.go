@@ -48,7 +48,7 @@ func Listen(symbol string, port int, ready chan<- struct{}) {
 		event := models.Event{
 			Timestamp: time.Now(),
 			EventType: models.OrderBookUpdate,
-			Data:      p,
+			Data:      string(p),
 		}
 
 		events_keeper.Save(event)
