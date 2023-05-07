@@ -12,6 +12,13 @@ type BaseOrderbook struct {
 	bids             []models.Order
 }
 
+func MakeBaseOrderbook() *BaseOrderbook {
+	return &BaseOrderbook{
+		askPriceToVolume: make(map[float64]float64),
+		bidPriceToVolume: make(map[float64]float64),
+	}
+}
+
 func (t BaseOrderbook) GetAsks() []models.Order {
 	return t.asks
 }

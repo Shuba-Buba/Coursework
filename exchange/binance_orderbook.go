@@ -10,6 +10,10 @@ type BinanceOrderbook struct {
 	BaseOrderbook
 }
 
+func MakeBinanceOrderbook() *BinanceOrderbook {
+	return &BinanceOrderbook{*MakeBaseOrderbook()}
+}
+
 type binanceOrderbookUpdate struct {
 	Bids [][]string `json:"b"`
 	Asks [][]string `json:"a"`
