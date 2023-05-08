@@ -1,5 +1,7 @@
 package exchange
 
+import "test/models"
+
 type Exchange interface {
 	PlaceOrder()
 	CancelOrder()
@@ -7,4 +9,6 @@ type Exchange interface {
 	GetBalance()
 	GetOrderInfo()
 	GetOrderbook() Orderbook
+	GetNewTrades()
+	Update(event models.Event)
 }

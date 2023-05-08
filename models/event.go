@@ -15,8 +15,3 @@ type Event struct {
 	Type      EventType
 	Data      string
 }
-
-type Order struct {
-	Price  float64
-	Volume float64
-}
