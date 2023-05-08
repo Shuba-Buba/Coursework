@@ -6,6 +6,7 @@ import (
 	"net"
 	"test/connectors"
 	"test/contracts"
+	"test/models"
 )
 
 var start_port = 10000
@@ -26,11 +27,16 @@ func (this *Postman) Run() {
 		case new_contract := <-this.ch:
 			if new_contract.Remote_port == 0 {
 				cur_real_port := start_port + cur_free_port
-				this.connects = append(this.connects, &connectors.Connector{
-					Ready:         make(chan struct{}),
-					Start_working: make(chan struct{}),
-					Port:          cur_real_port},
-				)
+
+				ready := make(chan chan models.Event)
+				cancel := make(chan chan models.Event)
+				this.connects = append(this.connects, connectors.MakeConnector(ready, cancel))
+				// this.connects = append(this.connects, &connectors.Connector{
+				// 	Ready:         ready,
+				// 	Cancel:        cancel,
+				// 	Start_working: make(chan struct{}),
+				// 	Port:          cur_real_port},
+				// )
 				socket_address := "wss://stream.binance.com:9443/ws/" + new_contract.Symbol + "@depth@100ms"
 				go this.connects[cur_free_port].Connect(socket_address)
 
