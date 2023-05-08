@@ -9,9 +9,7 @@ import (
 )
 
 type Connector struct {
-	Ready         chan struct{}
-	Start_working chan struct{}
-	Port          int
+	Port int
 	// Conn      chan string
 	// orderBook *Orderbook
 }
@@ -27,15 +25,11 @@ func (c *Connector) Connect(symbols string) {
 	}
 	defer socket.Close()
 
-	c.Ready <- struct{}{}
-
-	<-c.Start_working
-
 	for {
 		_, message, err := socket.ReadMessage()
 		if err != nil {
 			log.Println("Write error:", err)
-			panic("SOSAT")
+			panic(err)
 		}
 		if err != nil {
 			panic("Bad addr")

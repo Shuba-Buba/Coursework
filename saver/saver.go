@@ -9,9 +9,8 @@ import (
 	"os"
 	"sync"
 	"test/contracts"
-	"test/models"
+	"test/event_handler"
 	"test/storage"
-	"time"
 )
 
 var my_port int = 1234
@@ -25,32 +24,10 @@ func MakeSaver(sender chan contracts.Contract) *Saver {
 	return &Saver{Port: my_port, ch: sender}
 }
 
-func Listen(symbol string, port int, ready chan<- struct{}) {
+func Listen(symbol string, port int) {
 	events_keeper := storage.MakeEventsKeeper(symbol)
-
-	addr := net.UDPAddr{
-		Port: port,
-		IP:   net.ParseIP("127.0.0.1"),
-	}
-	ser, _ := net.ListenUDP("udp", &addr)
-
-	ready <- struct{}{}
-
-	for {
-		p := make([]byte, 2048)
-		_, _, err := ser.ReadFromUDP(p)
-
-		if err != nil {
-			fmt.Printf("Some error  %v", err)
-			continue
-		}
-
-		event := models.Event{
-			Timestamp: time.Now(),
-			EventType: models.OrderBookUpdate,
-			Data:      string(p),
-		}
-
+	eventChan := event_handler.StartHandling(port)
+	for event := range eventChan {
 		events_keeper.Save(event)
 	}
 }
@@ -76,7 +53,6 @@ func (this *Saver) Run() {
 		panic(err)
 	}
 
-	ready := make(chan struct{})
 	for {
 		contract := contracts.Contract{Port: my_port}
 		err := dec.Decode(&contract)
@@ -103,12 +79,9 @@ func (this *Saver) Run() {
 		}
 		go func() {
 			wg.Add(1)
-			Listen(contract.Symbol, int(port), ready)
+			Listen(contract.Symbol, int(port))
 			wg.Done()
 		}()
-		<-ready
-		contract.Remote_port = int(port)
-		this.ch <- contract
 	}
 	wg.Wait()
 }

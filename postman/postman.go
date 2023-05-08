@@ -27,14 +27,10 @@ func (this *Postman) Run() {
 			if new_contract.Remote_port == 0 {
 				cur_real_port := start_port + cur_free_port
 				this.connects = append(this.connects, &connectors.Connector{
-					Ready:         make(chan struct{}),
-					Start_working: make(chan struct{}),
-					Port:          cur_real_port},
+					Port: cur_real_port},
 				)
 				socket_address := "wss://stream.binance.com:9443/ws/" + new_contract.Symbol + "@depth@100ms"
 				go this.connects[cur_free_port].Connect(socket_address)
-
-				<-this.connects[cur_free_port].Ready
 
 				addr := fmt.Sprintf("127.0.0.1:%d", new_contract.Port)
 				conn, _ := net.Dial("udp", addr)
@@ -43,10 +39,9 @@ func (this *Postman) Run() {
 				binary.LittleEndian.PutUint32(bs, uint32(cur_real_port))
 				conn.Write(bs)
 				cur_free_port += 1
-			} else {
-				pos := new_contract.Remote_port - start_port
-				this.connects[pos].Start_working <- struct{}{}
 			}
+		default:
+			// TODO
 		}
 	}
 
