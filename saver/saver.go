@@ -1,15 +1,14 @@
 package saver
 
 import (
-	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net"
 	"os"
 	"sync"
+	"test/connectors"
 	"test/contracts"
-	"test/event_handler"
 	"test/storage"
 )
 
@@ -24,10 +23,9 @@ func MakeSaver(sender chan contracts.Contract) *Saver {
 	return &Saver{Port: my_port, ch: sender}
 }
 
-func Listen(symbol string, port int) {
-	events_keeper := storage.MakeEventsKeeper(symbol)
-	eventChan := event_handler.StartHandling(port)
-	for event := range eventChan {
+func Listen(current_connector connectors.Connector) {
+	events_keeper := storage.MakeEventsKeeper(current_connector.Symbol)
+	for event := range current_connector.Start() {
 		events_keeper.Save(event)
 	}
 }
@@ -65,21 +63,23 @@ func (this *Saver) Run() {
 
 		this.ch <- contract
 
-		p := make([]byte, 4) // всегда ожидаем инт
+		p := make([]byte, 100) // какой то большой размер структуры
+		var current_connector connectors.Connector
 
-		_, remoteaddr, err := ser.ReadFromUDP(p)
+		size, remoteaddr, err := ser.ReadFromUDP(p)
 		if err != nil {
 			fmt.Printf("Some error %v from %v", err, remoteaddr)
 			continue
 		}
 
-		port := binary.LittleEndian.Uint32(p)
+		err = json.Unmarshal(p[:size], &current_connector)
 		if err != nil {
-			panic(err)
+			panic("Bad Connector")
 		}
+
 		go func() {
 			wg.Add(1)
-			Listen(contract.Symbol, int(port))
+			Listen(current_connector)
 			wg.Done()
 		}()
 	}
