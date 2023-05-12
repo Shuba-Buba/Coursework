@@ -27,7 +27,7 @@ func MakeConnector(other contracts.Contract) (res *Connector) {
 		Symbol: other.Symbol,
 	}
 
-	switch strings.ToLower(other.MarketName) {
+	switch strings.ToLower(other.ExchangeName) {
 	case "binance":
 		res.socket_address = "wss://stream.binance.com:9443/ws/" + other.Symbol + "@depth@100ms"
 		res.snapshot = "Some address!!"
@@ -50,10 +50,6 @@ func (c *Connector) Connect() {
 
 	for {
 		_, message, err := socket.ReadMessage()
-		if err != nil {
-			log.Println("Write error:", err)
-			panic(err)
-		}
 		if err != nil {
 			panic("Bad addr")
 		}
