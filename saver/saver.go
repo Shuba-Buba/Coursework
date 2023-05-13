@@ -7,9 +7,9 @@ import (
 	"net"
 	"os"
 	"sync"
-	"test/connectors"
-	"test/contracts"
-	"test/storage"
+	"trading/connector"
+	"trading/contracts"
+	"trading/storage"
 )
 
 var my_port int = 1234
@@ -23,7 +23,7 @@ func MakeSaver(sender chan contracts.Contract) *Saver {
 	return &Saver{Port: my_port, ch: sender}
 }
 
-func Listen(current_connector connectors.Connector) {
+func Listen(current_connector connector.Connector) {
 	events_keeper := storage.MakeEventsKeeper(current_connector.Symbol)
 	for event := range current_connector.Start() {
 		events_keeper.Save(event)
@@ -64,7 +64,7 @@ func (this *Saver) Run() {
 		this.ch <- contract
 
 		p := make([]byte, 100) // какой то большой размер структуры
-		var current_connector connectors.Connector
+		var current_connector connector.Connector
 
 		size, remoteaddr, err := ser.ReadFromUDP(p)
 		if err != nil {

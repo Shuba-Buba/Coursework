@@ -1,4 +1,4 @@
-module test
+module trading
 
 go 1.19
 
