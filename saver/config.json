@@ -1,6 +1,8 @@
 {
-    "symbol": "btcusdt"
+    "symbol": "btcusdt",
+    "stock_market_name": "binance"
 }
 {
-    "symbol": "nearusdt"
+    "symbol": "nearusdt",
+    "stock_market_name": "binance"
 }

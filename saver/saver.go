@@ -1,17 +1,15 @@
 package saver
 
 import (
-	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net"
 	"os"
 	"sync"
+	"test/connectors"
 	"test/contracts"
-	"test/models"
 	"test/storage"
-	"time"
 )
 
 var my_port int = 1234
@@ -25,32 +23,9 @@ func MakeSaver(sender chan contracts.Contract) *Saver {
 	return &Saver{Port: my_port, ch: sender}
 }
 
-func Listen(symbol string, port int, ready chan<- struct{}) {
-	events_keeper := storage.MakeEventsKeeper(symbol)
-
-	addr := net.UDPAddr{
-		Port: port,
-		IP:   net.ParseIP("127.0.0.1"),
-	}
-	ser, _ := net.ListenUDP("udp", &addr)
-
-	ready <- struct{}{}
-
-	for {
-		p := make([]byte, 2048)
-		_, _, err := ser.ReadFromUDP(p)
-
-		if err != nil {
-			fmt.Printf("Some error  %v", err)
-			continue
-		}
-
-		event := models.Event{
-			Timestamp: time.Now(),
-			Type:      models.OrderBookUpdate,
-			Data:      string(p),
-		}
-
+func Listen(current_connector connectors.Connector) {
+	events_keeper := storage.MakeEventsKeeper(current_connector.Symbol)
+	for event := range current_connector.Start() {
 		events_keeper.Save(event)
 	}
 }
@@ -76,7 +51,6 @@ func (this *Saver) Run() {
 		panic(err)
 	}
 
-	ready := make(chan struct{})
 	for {
 		contract := contracts.Contract{Port: my_port}
 		err := dec.Decode(&contract)
@@ -89,26 +63,25 @@ func (this *Saver) Run() {
 
 		this.ch <- contract
 
-		p := make([]byte, 4) // всегда ожидаем инт
+		p := make([]byte, 100) // какой то большой размер структуры
+		var current_connector connectors.Connector
 
-		_, remoteaddr, err := ser.ReadFromUDP(p)
+		size, remoteaddr, err := ser.ReadFromUDP(p)
 		if err != nil {
 			fmt.Printf("Some error %v from %v", err, remoteaddr)
 			continue
 		}
 
-		port := binary.LittleEndian.Uint32(p)
+		err = json.Unmarshal(p[:size], &current_connector)
 		if err != nil {
-			panic(err)
+			panic("Bad Connector")
 		}
+
 		go func() {
 			wg.Add(1)
-			Listen(contract.Symbol, int(port), ready)
+			Listen(current_connector)
 			wg.Done()
 		}()
-		<-ready
-		contract.Remote_port = int(port)
-		this.ch <- contract
 	}
 	wg.Wait()
 }
