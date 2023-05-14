@@ -1,14 +1,14 @@
 package connectors
 
 import (
-	"fmt"
+	"bytes"
 	"log"
-	"net"
+	"strings"
 
 	"github.com/gorilla/websocket"
 )
 
-type Connector struct {
+type ExchangeConnector struct {
 	Port          uint
 	Symbol        string
 	SocketAddress string
@@ -17,31 +17,37 @@ type Connector struct {
 	// orderBook *Orderbook
 }
 
-func MakeExchangeConnector(exchange, section, symbol string, port uint) (conn *Connector) {
-	conn = &Connector{
+func MakeExchangeConnector(exchange, section, symbol string, port uint) (conn *ExchangeConnector) {
+	conn = &ExchangeConnector{
 		Port:   port,
-		Symbol: symbol,
+		Symbol: strings.ToLower(symbol),
 	}
 
 	if exchange == "binance" && section == "futures" {
-		conn.SocketAddress = "wss://fstream.binance.com/ws/" + symbol + "@depth@100ms"
+		conn.SocketAddress = "wss://fstream.binance.com/ws/"
 	} else {
-		log.Panicf("Connector for %v % v not implemented", exchange, section)
+		log.Panicf("ExchangeConnector for %v %v not implemented", exchange, section)
 	}
 	return
 }
 
-func (c *Connector) Connect() {
+func (c *ExchangeConnector) Connect() {
 
-	addr := fmt.Sprintf("224.0.0.1:%d", c.Port)
-	outputConn, err := net.Dial("udp", addr)
+	outputConn := MakeUDPConnector("224.0.0.1", c.Port)
 
 	socket, _, err := websocket.DefaultDialer.Dial(c.SocketAddress, nil)
 	if err != nil {
-		log.Println("Error:", err)
+		log.Print("Error:", err)
 		return
 	}
 	defer socket.Close()
+
+	startMsg := map[string]interface{}{
+		"method": "SUBSCRIBE",
+		"params": []string{c.Symbol + "@depth@100ms"},
+		"id":     1,
+	}
+	socket.WriteJSON(startMsg)
 
 	log.Printf("start connector loop for %v at port %v", c.Symbol, c.Port)
 	for {
@@ -49,7 +55,10 @@ func (c *Connector) Connect() {
 		if err != nil {
 			log.Panic("Couldn't read from websocket")
 		}
-		outputConn.Write(message)
-		log.Printf("Sent message: %s\n", string(message))
+		if bytes.Contains(message, []byte("depthUpdate")) {
+			outputConn.Write(message)
+		} else {
+			log.Printf("Receive message: %s\n", string(message))
+		}
 	}
 }

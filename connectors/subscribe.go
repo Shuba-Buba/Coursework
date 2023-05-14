@@ -2,30 +2,40 @@ package connectors
 
 import (
 	"fmt"
-	"net"
+	"log"
 	"time"
+	"trading/binance/http"
 	"trading/models"
+
+	"github.com/valyala/fastjson"
 )
 
-func Subscribe(port uint) <-chan models.Event {
+func SubscribeDepth(port uint, symbol string) <-chan models.Event {
 	eventChan := make(chan models.Event, 100)
 	go func() {
 		defer close(eventChan)
 
-		addr := net.UDPAddr{
-			Port: int(port),
-			IP:   net.ParseIP("224.0.0.1"),
-		}
-		ser, _ := net.ListenUDP("udp", &addr)
+		UDPConn := MakeUDPConnector("224.0.0.1", port)
+		parser := fastjson.Parser{}
+		buffer := []string{}
 
+		fmt.Print(string(http.GetSnapshot(symbol)))
+		// panic("kek")
 		for {
 			p := make([]byte, 2048)
-			size, _, err := ser.ReadFromUDP(p)
+			size, _, err := UDPConn.ReadFromUDP(p)
 
 			if err != nil {
-				fmt.Printf("Some error  %v", err)
-				continue
+				log.Panicf("UDPConn error %v", err)
 			}
+
+			value, err := parser.Parse(string(p[:size]))
+			if err != nil {
+				log.Panicf("Error in json parsing: %v", err)
+			}
+			fmt.Print(value)
+			buffer = append(buffer, "aba")
+			// if value.GetString<U>
 
 			event := models.Event{
 				Timestamp: time.Now(),

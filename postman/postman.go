@@ -2,17 +2,14 @@ package postman
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
-	"net"
 	"strings"
-
 	"trading/connectors"
 )
 
 type Postman struct {
 	ListenPort    uint
-	Connectors    map[string]*connectors.Connector
+	Connectors    map[string]*connectors.ExchangeConnector
 	FirstFreePort uint
 }
 
@@ -20,24 +17,18 @@ func MakePostman(listenPort uint, config PostmanConfig) *Postman {
 	return &Postman{
 		ListenPort:    listenPort,
 		FirstFreePort: config.FirstFreePort,
-		Connectors:    make(map[string]*connectors.Connector)}
+		Connectors:    make(map[string]*connectors.ExchangeConnector)}
 }
 
 func (this *Postman) Run() {
 	p := make([]byte, 2048)
-	addr := net.UDPAddr{
-		Port: int(this.ListenPort),
-		IP:   net.ParseIP("127.0.0.1"),
-	}
-	conn, err := net.ListenUDP("udp", &addr)
-	if err != nil {
-		fmt.Printf("Some error %v\n", err)
-		return
-	}
+
+	conn := connectors.MakeUDPConnector("127.0.0.1", this.ListenPort)
+
 	log.Print("Start postman loop")
 	for {
 		n, remoteaddr, err := conn.ReadFromUDP(p)
-		log.Printf("Read a message from %v %s \n", remoteaddr, p)
+		log.Printf("Read a message from %v %s", remoteaddr, p)
 		if err != nil {
 			log.Printf("Error reading from UDP %v", err)
 			continue
@@ -45,7 +36,6 @@ func (this *Postman) Run() {
 
 		var request PostmanRequest
 		json.Unmarshal(p[:n], &request)
-		log.Print(request)
 
 		switch request.Type {
 		case "subscription":

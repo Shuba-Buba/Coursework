@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"trading/postman"
+	"trading/saver"
 )
 
 func main() {
@@ -15,11 +16,13 @@ func main() {
 	flag.UintVar(&postmanPort, "postmanPort", 7777, "postman port to listen connection requests")
 	flag.Parse()
 
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
 	switch mode {
 	case "postman":
 		postman.Init(configPath, postmanPort)
 	case "saver":
-		// saver.Init(configPath, postmanPort)
+		saver.Init(configPath, postmanPort)
 	default:
 		log.Fatal("Invalid mode")
 	}

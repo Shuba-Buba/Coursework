@@ -1,19 +1,13 @@
 package saver
 
 import (
-	"fmt"
 	"sync"
-	"trading/contracts"
 )
 
-//x.Connect("wss://stream.binance.com:9443/ws/btcusdt@depth@100ms", deliver.Port)
+func Init(configPath string, postmanPort uint) {
 
-func Start() {
-	x := 4 // количество сущностей которые будут поставлять задачи в постман
-
-	ch := make(chan contracts.Contract, x)
 	wg := sync.WaitGroup{}
-	saver := MakeSaver(ch)
+	saver := MakeSaver(configPath, postmanPort)
 
 	wg.Add(1)
 
@@ -23,10 +17,4 @@ func Start() {
 	}()
 
 	wg.Wait()
-
-}
-
-func Init() {
-	Start()
-	fmt.Println("OK")
 }

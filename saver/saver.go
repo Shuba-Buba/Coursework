@@ -19,7 +19,7 @@ type Saver struct {
 	ch   chan<- contracts.Contract
 }
 
-func MakeSaver(sender chan contracts.Contract) *Saver {
+func MakeSaver(configPath string, postmanPort uint) *Saver {
 	return &Saver{Port: my_port, ch: sender}
 }
 
