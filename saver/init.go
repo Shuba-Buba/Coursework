@@ -7,7 +7,8 @@ import (
 func Init(configPath string, postmanPort uint) {
 
 	wg := sync.WaitGroup{}
-	saver := MakeSaver(configPath, postmanPort)
+	config := ParseConfig(configPath)
+	saver := MakeSaver(config, postmanPort)
 
 	wg.Add(1)
 

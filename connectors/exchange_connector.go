@@ -33,7 +33,7 @@ func MakeExchangeConnector(exchange, section, symbol string, port uint) (conn *E
 
 func (c *ExchangeConnector) Connect() {
 
-	outputConn := MakeUDPConnector("224.0.0.1", c.Port)
+	outputConn := MakeDialUDPConnector("224.0.0.1", c.Port)
 
 	socket, _, err := websocket.DefaultDialer.Dial(c.SocketAddress, nil)
 	if err != nil {

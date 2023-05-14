@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"log"
 	"path"
-	"test/models"
 	"time"
+	"trading/models"
 )
 
 type EventsKeeper struct {

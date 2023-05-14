@@ -5,6 +5,7 @@ import (
 	"log"
 	"strings"
 	"trading/connectors"
+	"trading/postman/messages"
 )
 
 type Postman struct {
@@ -34,13 +35,13 @@ func (this *Postman) Run() {
 			continue
 		}
 
-		var request PostmanRequest
+		var request messages.PostmanRequest
 		json.Unmarshal(p[:n], &request)
 
 		switch request.Type {
 		case "subscription":
-			port := this.GetConnectorPort(request.FullSymbol)
-			var response = PostmanResponse{request.FullSymbol, port}
+			port := this.GetConnectorPort(request.Instrument)
+			var response = messages.PostmanResponse{Instrument: request.Instrument, Port: port}
 			bytesResponse, _ := json.Marshal(response)
 			go conn.WriteToUDP(bytesResponse, remoteaddr)
 		case "heartbeat": // раз в 9 минут шлём heatrbeat'ы postman'у, если за 10 минут по Symbol не прилетело ни одного хартбита то выключаем коннектор
@@ -51,9 +52,9 @@ func (this *Postman) Run() {
 	}
 }
 
-func (this *Postman) GetConnectorPort(fullSymbol string) uint {
+func (this *Postman) GetConnectorPort(instrument string) uint {
 
-	conn, ok := this.Connectors[fullSymbol]
+	conn, ok := this.Connectors[instrument]
 	if ok {
 		return conn.Port
 	}
@@ -61,11 +62,11 @@ func (this *Postman) GetConnectorPort(fullSymbol string) uint {
 	// иначе создаём новый Connector
 	port := this.FirstFreePort
 	this.FirstFreePort += 1
-	splitted := strings.Split(fullSymbol, "@")
+	splitted := strings.Split(instrument, "@")
 	exchange, section, symbol := splitted[0], splitted[1], splitted[2]
 
 	new_connector := connectors.MakeExchangeConnector(exchange, section, symbol, port)
-	this.Connectors[fullSymbol] = new_connector
+	this.Connectors[instrument] = new_connector
 
 	go new_connector.Connect()
 

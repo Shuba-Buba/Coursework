@@ -1,8 +1,7 @@
 {
-    "symbol": "btcusdt",
-    "stock_market_name": "binance"
-}
-{
-    "symbol": "nearusdt",
-    "stock_market_name": "binance"
+    "port": 8888,
+    "subscribed_instruments": [
+        "binance@futures@btcusdt",
+        "binance@futures@ethusdt"
+    ]
 }

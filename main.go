@@ -12,7 +12,7 @@ func main() {
 	var configPath string
 	var postmanPort uint
 	flag.StringVar(&mode, "mode", "client", "mode to run the program")
-	flag.StringVar(&configPath, "configPath", "postman/config.json", "config")
+	flag.StringVar(&configPath, "config", "", "config path")
 	flag.UintVar(&postmanPort, "postmanPort", 7777, "postman port to listen connection requests")
 	flag.Parse()
 
