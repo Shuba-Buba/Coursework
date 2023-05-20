@@ -1,6 +1,6 @@
 package common
 
-// TODO: использовать такую хуйню вместо остального говна
+// TODO: использовать такое вместо обычных строк
 type Instrument struct {
 	Exchange   string // binance
 	Section    string // futures

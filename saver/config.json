@@ -1,5 +1,4 @@
 {
-    "port": 8888,
     "subscribed_instruments": [
         "binance@futures@btcusdt",
         "binance@futures@ethusdt"

@@ -13,7 +13,7 @@ type EventsKeeper struct {
 }
 
 func getTableName(t time.Time) string {
-	return t.Format("2006-01-02-15-04")
+	return t.Format("2006-01-02T15:04")
 }
 
 func MakeEventsKeeper(symbol string) *EventsKeeper {

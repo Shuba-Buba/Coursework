@@ -23,17 +23,24 @@ func MakeExchangeConnector(exchange, section, symbol string, port uint) (conn *E
 		Symbol: strings.ToLower(symbol),
 	}
 
-	if exchange == "binance" && section == "futures" {
-		conn.SocketAddress = "wss://fstream.binance.com/ws/"
-	} else {
-		log.Panicf("ExchangeConnector for %v %v not implemented", exchange, section)
+	switch exchange {
+	case "binance":
+		switch section {
+		case "futures":
+			conn.SocketAddress = "wss://fstream.binance.com/ws/"
+		default:
+			log.Panicf("ExchangeConnector for %v section %v not implemented", exchange, section)
+		}
+	default:
+		log.Panicf("ExchangeConnector for exchange %v not implemented", exchange)
 	}
-	return
+	return conn
 }
 
 func (c *ExchangeConnector) Connect() {
 
 	outputConn := MakeDialUDPConnector("224.0.0.1", c.Port)
+	maxMsgLength := 0
 
 	socket, _, err := websocket.DefaultDialer.Dial(c.SocketAddress, nil)
 	if err != nil {
@@ -57,6 +64,10 @@ func (c *ExchangeConnector) Connect() {
 		}
 		if bytes.Contains(message, []byte("depthUpdate")) {
 			outputConn.Write(message)
+			if len(message) > maxMsgLength {
+				log.Printf("max message length updated: got len = %v", len(message))
+				maxMsgLength = len(message)
+			}
 		} else {
 			log.Printf("Receive message: %s\n", string(message))
 		}

@@ -5,9 +5,9 @@ import "time"
 type EventType int
 
 const (
-	OrderBookUpdate   EventType = iota
-	Trade             EventType = iota
-	OrderBookSnapshot EventType = iota
+	OrderBookUpdate EventType = iota
+	Trade           EventType = iota
+	Snapshot        EventType = iota
 )
 
 type Event struct {

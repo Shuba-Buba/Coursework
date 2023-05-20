@@ -9,7 +9,6 @@ import (
 
 type SaverConfig struct {
 	SubscribedInstruments []string
-	SaverPort             uint
 }
 
 func ParseConfig(configPath string) SaverConfig {
@@ -30,7 +29,6 @@ func ParseConfig(configPath string) SaverConfig {
 		instrument := elem.(string)
 		config.SubscribedInstruments = append(config.SubscribedInstruments, instrument)
 	}
-	config.SaverPort = uint(rawConfig["port"].(float64))
 
 	return config
 }
