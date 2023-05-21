@@ -2,7 +2,7 @@ package saver
 
 import (
 	"sync"
-	"trading/connectors"
+	"trading/common/connectors"
 	"trading/storage"
 )
 

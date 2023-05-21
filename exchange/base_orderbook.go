@@ -2,14 +2,14 @@ package exchange
 
 import (
 	"sort"
-	"test/models"
+	"trading/common/types"
 )
 
 type BaseOrderbook struct {
 	askPriceToVolume map[float64]float64
 	bidPriceToVolume map[float64]float64
-	asks             []models.Order
-	bids             []models.Order
+	asks             []types.Order
+	bids             []types.Order
 }
 
 func MakeBaseOrderbook() *BaseOrderbook {
@@ -19,32 +19,32 @@ func MakeBaseOrderbook() *BaseOrderbook {
 	}
 }
 
-func (t BaseOrderbook) GetAsks() []models.Order {
+func (t BaseOrderbook) GetAsks() []types.Order {
 	return t.asks
 }
 
-func (t BaseOrderbook) GetBids() []models.Order {
+func (t BaseOrderbook) GetBids() []types.Order {
 	return t.bids
 }
 
-func (t BaseOrderbook) updateAsks(updates []models.Order) {
+func (t BaseOrderbook) updateAsks(updates []types.Order) {
 	updateMap(t.askPriceToVolume, updates)
 	t.asks = updateOrderListFromMap(t.asks, t.askPriceToVolume)
 }
 
-func (t BaseOrderbook) updateBids(updates []models.Order) {
+func (t BaseOrderbook) updateBids(updates []types.Order) {
 	updateMap(t.bidPriceToVolume, updates)
 	t.bids = updateOrderListFromMap(t.bids, t.bidPriceToVolume)
 }
 
-func (t BaseOrderbook) applySnapshot(asks []models.Order, bids []models.Order) {
+func (t BaseOrderbook) applySnapshot(asks []types.Order, bids []types.Order) {
 	t.askPriceToVolume = make(map[float64]float64)
 	t.bidPriceToVolume = make(map[float64]float64)
 	updateOrderListFromMap(asks, t.askPriceToVolume)
 	updateOrderListFromMap(bids, t.bidPriceToVolume)
 }
 
-func updateMap(m map[float64]float64, updates []models.Order) {
+func updateMap(m map[float64]float64, updates []types.Order) {
 	for _, order := range updates {
 		if order.Volume == 0 {
 			delete(m, order.Price)
@@ -54,7 +54,7 @@ func updateMap(m map[float64]float64, updates []models.Order) {
 	}
 }
 
-func updateOrderListFromMap(orderList []models.Order, m map[float64]float64) []models.Order {
+func updateOrderListFromMap(orderList []types.Order, m map[float64]float64) []types.Order {
 	var keys []float64
 	for k := range m {
 		keys = append(keys, k)
@@ -65,7 +65,7 @@ func updateOrderListFromMap(orderList []models.Order, m map[float64]float64) []m
 	orderList = orderList[:0]
 
 	for _, k := range keys {
-		orderList = append(orderList, models.Order{Price: k, Volume: m[k]})
+		orderList = append(orderList, types.Order{Price: k, Volume: m[k]})
 	}
 
 	return orderList
