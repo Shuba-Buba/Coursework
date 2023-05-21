@@ -1,6 +1,6 @@
 package exchange
 
-import "test/models"
+import "trading/common/types"
 
 type Exchange interface {
 	PlaceOrder()
@@ -10,5 +10,5 @@ type Exchange interface {
 	GetOrderInfo()
 	GetOrderbook() Orderbook
 	GetNewTrades()
-	Update(event models.Event)
+	Update(event types.Event)
 }

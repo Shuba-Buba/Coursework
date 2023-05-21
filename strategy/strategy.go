@@ -1,6 +1,6 @@
 package strategy
 
-import "test/exchange"
+import "trading/exchange"
 
 type Strategy interface {
 	OnTick(exchange exchange.Exchange)

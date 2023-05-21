@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"strings"
-	"trading/connectors"
+	"trading/common/connectors"
 	"trading/postman/messages"
 )
 
