@@ -15,12 +15,12 @@ const (
 )
 
 const (
-	PendingPlacing    OrderStatus = "pending_placing"
-	Placed            OrderStatus = "placed"
-	PendingCancelling OrderStatus = "pending_cancelling"
-	Cancelled         OrderStatus = "cancelled"
-	Filled            OrderStatus = "filled"
-	// and more
+	Placing         OrderStatus = "placing"
+	Placed          OrderStatus = "placed"
+	Cancelling      OrderStatus = "cancelling"
+	Cancelled       OrderStatus = "cancelled"
+	PartiallyFilled OrderStatus = "paritally_filled"
+	Filled          OrderStatus = "filled"
 )
 
 type OrderInfo struct {
@@ -44,10 +44,6 @@ func (t *OrderTracker) getOrderInfoPtr(orderId string) *OrderInfo {
 		panic("Order with given orderId does not exist.")
 	}
 	return orderInfo
-}
-
-func (t *OrderTracker) deleteOrder(orderId string) {
-
 }
 
 func (t *OrderTracker) GetOrderInfo(orderId string) OrderInfo {
