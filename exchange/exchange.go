@@ -31,42 +31,42 @@ const (
 	OrderSideSell OrderSide = "SELL"
 )
 
-type PlaceOrderBuilder struct {
+type PlaceOrderRequestBuilder struct {
 	params   *PlaceOrderParams
 	exchange Exchange
 }
 
-func (t *PlaceOrderBuilder) OrderSide(side OrderSide) *PlaceOrderBuilder {
+func (t *PlaceOrderRequestBuilder) OrderSide(side OrderSide) *PlaceOrderRequestBuilder {
 	t.params.side = side
 	return t
 }
 
-func (t *PlaceOrderBuilder) Symbol(symbol string) *PlaceOrderBuilder {
+func (t *PlaceOrderRequestBuilder) Symbol(symbol string) *PlaceOrderRequestBuilder {
 	t.params.symbol = symbol
 	return t
 }
 
-func (t *PlaceOrderBuilder) Quantity(quantity float64) *PlaceOrderBuilder {
+func (t *PlaceOrderRequestBuilder) Quantity(quantity float64) *PlaceOrderRequestBuilder {
 	t.params.quantity = quantity
 	return t
 }
 
-func (t *PlaceOrderBuilder) Price(price float64) *PlaceOrderBuilder {
+func (t *PlaceOrderRequestBuilder) Price(price float64) *PlaceOrderRequestBuilder {
 	t.params.price = price
 	return t
 }
 
-func (t *PlaceOrderBuilder) TimeInForce(timeInForceType TimeInForceType) *PlaceOrderBuilder {
+func (t *PlaceOrderRequestBuilder) TimeInForce(timeInForceType TimeInForceType) *PlaceOrderRequestBuilder {
 	t.params.timeInForceType = timeInForceType
 	return t
 }
 
-func (t *PlaceOrderBuilder) OrderType(orderType OrderType) *PlaceOrderBuilder {
+func (t *PlaceOrderRequestBuilder) OrderType(orderType OrderType) *PlaceOrderRequestBuilder {
 	t.params.orderType = orderType
 	return t
 }
 
-func (t *PlaceOrderBuilder) Do() (string, error) {
+func (t *PlaceOrderRequestBuilder) Do() (string, error) {
 	return t.exchange.PlaceOrder(*t.params)
 }
 
