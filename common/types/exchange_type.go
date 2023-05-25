@@ -3,12 +3,12 @@ package types
 type ExchangeType int64
 
 const (
-	Binance ExchangeType = 0
+	ExchangeTypeBinance ExchangeType = 0
 )
 
 func (this *ExchangeType) ToString() string {
 	switch *this {
-	case Binance:
+	case ExchangeTypeBinance:
 		return "binance"
 	default:
 		panic("unknown exchangeType")

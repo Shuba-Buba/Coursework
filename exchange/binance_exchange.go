@@ -94,16 +94,16 @@ func (t *BinanceExchange) PlaceOrder(params PlaceOrderParams) (string, error) {
 	return order.ClientOrderID, nil
 }
 
-func (t *BinanceExchange) CancelOrder(symbol string, orderId int64) error {
+func (t *BinanceExchange) CancelOrder(params CancelOrderParams) error {
 	// Игнорируется ответ, хотя наверное в нем есть что-то полезное, что можно вернуть
 	_, err := t.client.NewCancelOrderService().
-		Symbol(symbol).
-		OrderID(orderId).
+		Symbol(params.symbol).
+		OrigClientOrderID(params.orderId). // ?? вот здесь origClientOrderId это clientOrderId, который был получен при PlaceOrder??
 		Do(context.Background())
 	return err
 }
 
-func (t *BinanceExchange) CancelAllOrders(symbol string) error {
-	err := t.client.NewCancelAllOpenOrdersService().Symbol(symbol).Do(context.Background())
+func (t *BinanceExchange) CancelAllOrders(params CancelAllOrdersParams) error {
+	err := t.client.NewCancelAllOpenOrdersService().Symbol(params.symbol).Do(context.Background())
 	return err
 }
