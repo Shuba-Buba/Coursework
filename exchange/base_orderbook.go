@@ -2,7 +2,8 @@ package exchange
 
 import (
 	"sort"
-	"trading/common/types"
+
+	"github.com/Shuba-Buba/Trading-propper-backtest/common/types"
 )
 
 type BaseOrderbook struct {

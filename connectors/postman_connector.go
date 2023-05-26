@@ -5,9 +5,10 @@ import (
 	"log"
 	"net"
 	"time"
-	"trading/binance/http"
-	"trading/models"
-	"trading/postman/messages"
+
+	"github.com/Shuba-Buba/Trading-propper-backtest/binance/http"
+	"github.com/Shuba-Buba/Trading-propper-backtest/models"
+	"github.com/Shuba-Buba/Trading-propper-backtest/postman/messages"
 
 	"github.com/valyala/fastjson"
 )

@@ -5,7 +5,8 @@ import (
 	"log"
 	"path"
 	"time"
-	"trading/common/types"
+
+	"github.com/Shuba-Buba/Trading-propper-backtest/common/types"
 )
 
 type EventsKeeper struct {

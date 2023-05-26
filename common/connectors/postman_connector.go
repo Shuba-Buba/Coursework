@@ -6,9 +6,10 @@ import (
 	"net"
 	"sync"
 	"time"
-	"trading/binance/http"
-	"trading/common/types"
-	"trading/postman/messages"
+
+	"github.com/Shuba-Buba/Trading-propper-backtest/binance/http"
+	"github.com/Shuba-Buba/Trading-propper-backtest/common/types"
+	"github.com/Shuba-Buba/Trading-propper-backtest/postman/messages"
 
 	"github.com/valyala/fastjson"
 )
