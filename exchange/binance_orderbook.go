@@ -39,7 +39,7 @@ func pairsToOrders(pairs [][]string) []types.Order {
 
 func (b *BinanceOrderbook) Update(event types.Event) {
 	switch event.Type {
-	case types.OrderBookUpdate:
+	case types.EventTypeOrderbookUpdate:
 		update := binanceOrderbookUpdate{}
 		json.Unmarshal([]byte(event.Data), &update)
 
@@ -48,7 +48,7 @@ func (b *BinanceOrderbook) Update(event types.Event) {
 
 		b.updateAsks(asks)
 		b.updateBids(bids)
-	case types.Snapshot:
+	case types.EventTypeSnapshot:
 		snapshot := binanceSnapshot{}
 		json.Unmarshal([]byte(event.Data), &snapshot)
 

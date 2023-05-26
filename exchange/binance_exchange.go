@@ -8,9 +8,11 @@ import (
 
 	"github.com/adshao/go-binance/v2"
 	"github.com/adshao/go-binance/v2/futures"
+	"github.com/valyala/fastjson"
 )
 
 type BinanceExchange struct {
+	orderbooks   map[string]Orderbook
 	orderTracker *OrderTracker
 	client       *futures.Client
 	stopUserData chan struct{}
@@ -117,7 +119,10 @@ func (t *BinanceExchange) GetOrderbook(symbol string) Orderbook {
 }
 
 func (t *BinanceExchange) Update(event types.Event) {
-	panic("Not implemented")
+	if event.Type == types.EventTypeOrderbookUpdate {
+		symbol := fastjson.GetString([]byte(event.Data), "s")
+		t.orderbooks[symbol].Update(event)
+	}
 }
 
 func (t *BinanceExchange) CancelAllOrders(params CancelAllOrdersParams) error {

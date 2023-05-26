@@ -173,6 +173,8 @@ func GetExchangeClient(exchangeType types.ExchangeType) *ExchangeClient {
 	switch exchangeType {
 	case types.ExchangeTypeBinance:
 		exchange = MakeBinanceExchange(config.Binance.ApiKey, config.Binance.SecretKey)
+	case types.ExchangeTypeSimulated:
+		exchange = MakeSimulatedExchange()
 	}
 
 	request_helper := RequestHelper{exchange: exchange}
