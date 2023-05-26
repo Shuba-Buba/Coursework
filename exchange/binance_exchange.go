@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"trading/common/types"
 
 	"github.com/adshao/go-binance/v2"
 	"github.com/adshao/go-binance/v2/futures"
@@ -101,6 +102,22 @@ func (t *BinanceExchange) CancelOrder(params CancelOrderParams) error {
 		OrigClientOrderID(params.orderId). // ?? вот здесь origClientOrderId это clientOrderId, который был получен при PlaceOrder??
 		Do(context.Background())
 	return err
+}
+
+func (t *BinanceExchange) GetBalance(symbol string) float64 {
+	panic("Not implemented")
+}
+
+func (t *BinanceExchange) GetOrderInfo(orderId string) OrderInfo {
+	panic("Not implemented")
+}
+
+func (t *BinanceExchange) GetOrderbook(symbol string) Orderbook {
+	panic("Not implemented")
+}
+
+func (t *BinanceExchange) Update(event types.Event) {
+	panic("Not implemented")
 }
 
 func (t *BinanceExchange) CancelAllOrders(params CancelAllOrdersParams) error {

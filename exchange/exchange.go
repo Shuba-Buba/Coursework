@@ -136,9 +136,9 @@ type Exchange interface {
 	PlaceOrder(PlaceOrderParams) (string, error)
 	CancelOrder(CancelOrderParams) error
 	CancelAllOrders(CancelAllOrdersParams) error
-	GetBalance() error
-	GetOrderInfo() OrderInfo
-	GetOrderbook() Orderbook
+	GetBalance(symbol string) float64
+	GetOrderInfo(orderId string) OrderInfo
+	GetOrderbook(symbol string) Orderbook
 	Update(event types.Event)
 	Close()
 }
@@ -175,5 +175,7 @@ func GetExchangeClient(exchangeType types.ExchangeType) *ExchangeClient {
 		exchange = MakeBinanceExchange(config.Binance.ApiKey, config.Binance.SecretKey)
 	}
 
-	return &ExchangeClient{}
+	request_helper := RequestHelper{exchange: exchange}
+
+	return &ExchangeClient{RequestHelper: request_helper, Exchange: exchange}
 }
