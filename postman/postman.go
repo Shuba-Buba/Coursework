@@ -44,8 +44,6 @@ func (this *Postman) Run() {
 			var response = messages.PostmanResponse{Instrument: request.Instrument, Port: port}
 			bytesResponse, _ := json.Marshal(response)
 			go conn.WriteToUDP(bytesResponse, remoteaddr)
-		case "heartbeat": // раз в 9 минут шлём heatrbeat'ы postman'у, если за 10 минут по Symbol не прилетело ни одного хартбита то выключаем коннектор
-			log.Fatal("Not implemented")
 		default:
 			log.Printf("Unknown request type %s", request.Type)
 		}
