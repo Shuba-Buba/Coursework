@@ -4,7 +4,7 @@ Module for backtesting trading models.
 
 # How To Use
 
-1. Write your own implementation of strategy.Strategy intreface.
+1. Write your own implementation of strategy.Strategy interface.
 2. Call RunBacktest.
 
 # Example
