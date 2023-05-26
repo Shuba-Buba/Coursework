@@ -1,8 +1,8 @@
 package strategy
 
 import (
-	"trading/common/types"
-	"trading/exchange"
+	"github.com/Shuba-Buba/Trading-propper-backtest/common/types"
+	"github.com/Shuba-Buba/Trading-propper-backtest/exchange"
 )
 
 func Run(events chan types.Event, strategy Strategy, exchange exchange.Exchange) {

@@ -3,7 +3,8 @@ package exchange
 import (
 	"encoding/json"
 	"strconv"
-	"trading/common/types"
+
+	"github.com/Shuba-Buba/Trading-propper-backtest/common/types"
 )
 
 type BinanceOrderbook struct {

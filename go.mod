@@ -1,4 +1,4 @@
-module trading
+module github.com/Shuba-Buba/Trading-propper-backtest
 
 go 1.19
 

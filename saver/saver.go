@@ -2,8 +2,8 @@ package saver
 
 import (
 	"sync"
-	"trading/common/connectors"
-	"trading/storage"
+	"github.com/Shuba-Buba/Trading-propper-backtest/common/connectors"
+	"github.com/Shuba-Buba/Trading-propper-backtest/storage"
 )
 
 type Saver struct {

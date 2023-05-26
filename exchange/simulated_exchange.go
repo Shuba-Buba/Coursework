@@ -2,7 +2,8 @@ package exchange
 
 import (
 	"strconv"
-	"trading/common/types"
+
+	"github.com/Shuba-Buba/Trading-propper-backtest/common/types"
 )
 
 // Init()

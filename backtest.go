@@ -2,11 +2,12 @@ package main
 
 import (
 	"time"
-	"trading/common/types"
-	"trading/exchange"
-	"trading/storage"
-	"trading/strategy"
-	"trading/util"
+
+	"github.com/Shuba-Buba/Trading-propper-backtest/common/types"
+	"github.com/Shuba-Buba/Trading-propper-backtest/exchange"
+	"github.com/Shuba-Buba/Trading-propper-backtest/storage"
+	"github.com/Shuba-Buba/Trading-propper-backtest/strategy"
+	"github.com/Shuba-Buba/Trading-propper-backtest/util"
 )
 
 func RunBacktest(fromTime time.Time, toTime time.Time, s strategy.Strategy) {

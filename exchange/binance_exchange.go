@@ -4,7 +4,8 @@ import (
 	"context"
 	"fmt"
 	"strconv"
-	"trading/common/types"
+
+	"github.com/Shuba-Buba/Trading-propper-backtest/common/types"
 
 	"github.com/adshao/go-binance/v2"
 	"github.com/adshao/go-binance/v2/futures"

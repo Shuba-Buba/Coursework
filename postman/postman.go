@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"log"
 	"strings"
-	"trading/common/connectors"
-	"trading/postman/messages"
+
+	"github.com/Shuba-Buba/Trading-propper-backtest/common/connectors"
+	"github.com/Shuba-Buba/Trading-propper-backtest/postman/messages"
 )
 
 type Postman struct {

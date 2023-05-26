@@ -3,7 +3,8 @@ package exchange
 import (
 	"log"
 	"os"
-	"trading/common/types"
+
+	"github.com/Shuba-Buba/Trading-propper-backtest/common/types"
 
 	"gopkg.in/yaml.v3"
 )

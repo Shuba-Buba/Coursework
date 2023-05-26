@@ -3,8 +3,9 @@ package main
 import (
 	"flag"
 	"log"
-	"trading/postman"
-	"trading/saver"
+
+	"github.com/Shuba-Buba/Trading-propper-backtest/postman"
+	"github.com/Shuba-Buba/Trading-propper-backtest/saver"
 )
 
 func main() {
