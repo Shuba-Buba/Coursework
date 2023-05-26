@@ -26,8 +26,9 @@ func (t *MyStrategy) GetSymbols() []string {
 
 func (t *MyStrategy) OnTick(client exchange.ExchangeClient) {
 	if client.GetOrderbook(BTCUSDT_SYMBOL).GetAsks()[0].Price < 10.0 {
-		orderId, err := client.NewPlaceOrder().Symbol(BTCUSDT_SYMBOL).OrderSide(exchange.OrderSideBuy).
-			Price(42.0).Quantity(13.0).Do()
+		orderId, err := client.NewPlaceOrder().Symbol(BTCUSDT_SYMBOL).
+			OrderSide(exchange.OrderSideBuy).Price(42.0).Quantity(13.0).Do()
+
 		err = client.NewCancelOrder().Symbol(BTCUSDT_SYMBOL).
 			OrderId(orderId).Do()
 	}
@@ -46,5 +47,4 @@ func main() {
 	toTime := time.Now()
 	RunBacktest(fromTime, toTime, &MyStrategy{})
 }
-
 ```
