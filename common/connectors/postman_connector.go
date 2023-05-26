@@ -99,7 +99,7 @@ func (this *PostmanConnector) SubscribeDepth(instrument string) <-chan types.Eve
 						}
 						e := types.Event{
 							Timestamp: time.Now(),
-							Type:      types.Snapshot,
+							Type:      types.EventTypeSnapshot,
 							Data:      snapshotStr}
 						eventChan <- e
 
@@ -128,7 +128,7 @@ func (this *PostmanConnector) SubscribeDepth(instrument string) <-chan types.Eve
 							if lastId >= lastUpdateId {
 								e := types.Event{
 									Timestamp: time.Now(),
-									Type:      types.OrderBookUpdate,
+									Type:      types.EventTypeOrderbookUpdate,
 									Data:      string(p[:size]),
 								}
 								eventChan <- e
@@ -154,7 +154,7 @@ func (this *PostmanConnector) SubscribeDepth(instrument string) <-chan types.Eve
 				prevMessageId = lastId
 				event := types.Event{
 					Timestamp: time.Now(),
-					Type:      types.OrderBookUpdate,
+					Type:      types.EventTypeOrderbookUpdate,
 					Data:      eventStr,
 				}
 				eventChan <- event

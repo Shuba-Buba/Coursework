@@ -9,7 +9,7 @@ func Run(events chan types.Event, strategy Strategy, exchange exchange.Exchange)
 
 	// ждем снепшот
 	for event := range events {
-		if event.Type == types.Snapshot {
+		if event.Type == types.EventTypeSnapshot {
 			exchange.Update(event)
 			break
 		}
