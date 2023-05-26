@@ -1,18 +1,6 @@
 package exchange
 
-type OrderType string
-type OrderSide string
 type OrderStatus string
-
-const (
-	MarketOrder OrderType = "market"
-	LimitOrder  OrderType = "limit"
-)
-
-const (
-	Buy  OrderSide = "buy"
-	Sell OrderSide = "sell"
-)
 
 const (
 	Placing         OrderStatus = "placing"
@@ -36,6 +24,10 @@ type OrderInfo struct {
 
 type OrderTracker struct {
 	orderInfo map[string]*OrderInfo
+}
+
+func MakeOrderTracker() *OrderTracker {
+	return &OrderTracker{orderInfo: map[string]*OrderInfo{}}
 }
 
 func (t *OrderTracker) getOrderInfoPtr(orderId string) *OrderInfo {

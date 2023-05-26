@@ -22,7 +22,7 @@ func MakeInstrument(instrument string) Instrument {
 	} else {
 		log.Fatalf("unvalid instrument %s. Use exchange@section@symbol", instrument)
 	}
-	res.Exchange = Binance
+	res.Exchange = ExchangeTypeBinance
 	last_cnt := 4 // обычно quote asset это либо USDT либо BUSD, оба имеют 4 символа
 	if strings.HasSuffix(res.Symbol, "BTC") {
 		last_cnt = 3
